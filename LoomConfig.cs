@@ -17,7 +17,10 @@ namespace LoomConfig
         internal Harmony? Harmony { get; set; }
         
         // General
-        public static ConfigEntry<int> configClapDamage;
+        public static ConfigEntry<int> configMaxHealth;
+        public static ConfigEntry<int> configClapPlayerDamage;
+        public static ConfigEntry<int> configClapEnemyDamage;
+        public static ConfigEntry<float> configMovementSpeed;
         
         // Visual
         public static ConfigEntry<float> configPlayerLookDistance;
@@ -42,13 +45,22 @@ namespace LoomConfig
         private void InitConfig()
         {
             // General
-            configClapDamage = Config.Bind("General", "ClapDamage", 100,
-                new ConfigDescription("The amount of damage dealt by the clap attack.",
-                    new AcceptableValueRange<int>(0, 500)));
+            configMaxHealth = Config.Bind("General", "MaxHealth", 500,
+                new ConfigDescription("The maximum health of Loom.",
+                    new AcceptableValueRange<int>(10, 1000)));
+            configClapPlayerDamage = Config.Bind("General", "ClapPlayerDamage", 100,
+                new ConfigDescription("The amount of damage dealt to players by the clap attack.",
+                    new AcceptableValueRange<int>(0, 1000)));
+            configClapEnemyDamage = Config.Bind("General", "ClapEnemyDamage", 20,
+                new ConfigDescription("The amount of damage dealt to enemies by the clap attack.",
+                    new AcceptableValueRange<int>(0, 1000)));
+            configMovementSpeed = Config.Bind("General", "MovementSpeed", 4f,
+                new ConfigDescription("The movement speed of Loom.",
+                    new AcceptableValueRange<float>(1f, 6f)));
             
             // Visual
             configPlayerLookDistance = Config.Bind("Visual", "PlayerLookDistance", 7f,
-                new ConfigDescription("The distance at which the Loom considers itself close enough to look at the player.",
+                new ConfigDescription("The distance at which Loom considers herself close enough to look at the player.",
                     new AcceptableValueRange<float>(7f, 15f)));
             
             // Debug
