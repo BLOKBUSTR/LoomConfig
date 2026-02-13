@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
@@ -24,6 +25,8 @@ namespace LoomConfig
         
         // Visual
         public static ConfigEntry<float> configPlayerLookDistance;
+        public static ConfigEntry<bool> configScreenEffectShowHands;
+        public static ConfigEntry<bool> configScreenEffectShowVeins;
         
         // Debug
         private static ConfigEntry<bool> configEnableDebug;
@@ -49,7 +52,7 @@ namespace LoomConfig
                 new ConfigDescription("The maximum health of Loom.",
                     new AcceptableValueRange<int>(10, 1000)));
             configClapPlayerDamage = Config.Bind("General", "ClapPlayerDamage", 100,
-                new ConfigDescription("The amount of damage dealt to players by the clap attack.",
+                new ConfigDescription("The amount of damage dealt to players by the clap attack. This setting will be synced to all clients.",
                     new AcceptableValueRange<int>(0, 1000)));
             configClapEnemyDamage = Config.Bind("General", "ClapEnemyDamage", 20,
                 new ConfigDescription("The amount of damage dealt to enemies by the clap attack.",
@@ -62,9 +65,13 @@ namespace LoomConfig
             configPlayerLookDistance = Config.Bind("Visual", "PlayerLookDistance", 7f,
                 new ConfigDescription("The distance at which Loom considers herself close enough to look at the player.",
                     new AcceptableValueRange<float>(7f, 15f)));
+            configScreenEffectShowHands = Config.Bind("Visual", "ScreenEffectShowHands", true,
+                new ConfigDescription("Whether to show the hand layer in the screen effect."));
+            configScreenEffectShowVeins = Config.Bind("Visual", "ScreenEffectShowVeins", true,
+                new ConfigDescription("Whether to show the vein layer in the screen effect."));
             
             // Debug
-            configEnableDebug = Config.Bind("Debug", "EnableDebug", false,
+            configEnableDebug = Config.Bind("Debug", "EnableDebug", true,
                 new ConfigDescription("Whether to enable debug logging."));
         }
         
@@ -82,8 +89,14 @@ namespace LoomConfig
         internal static void Debug(string message, MonoBehaviour? instance = null)
         {
             if (!configEnableDebug.Value) return;
-            var prefix = instance != null ? $"{instance.GetInstanceID()}: " : "";
+            var prefix = instance != null ? $"{instance.GetInstanceID()}: " : string.Empty;
             Logger.LogDebug(prefix + message);
+        }
+        
+        internal static void Error(string message, MonoBehaviour? instance = null)
+        {
+            var prefix = instance != null ? $"{instance.GetInstanceID()}: " : string.Empty;
+            Logger.LogError(prefix + message);
         }
     }
 }
