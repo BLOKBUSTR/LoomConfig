@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using HarmonyLib;
 using Photon.Pun;
 using Unity.VisualScripting;
@@ -38,7 +36,13 @@ namespace LoomConfig
                 }
             }
             
-            // Enemy Damage
+            // Damage
+            var playerDamage = LoomConfig.configClapPlayerDamage.Value;
+            if (playerDamage != 100 && SemiFunc.IsMasterClientOrSingleplayer())
+            {
+                __instance.hurtColliderScript.playerDamage = playerDamage;
+                LoomConfig.Debug($"Changed clap player damage to {playerDamage}", __instance);
+            }
             var enemyDamage = LoomConfig.configClapEnemyDamage.Value;
             if (enemyDamage != 20)
             {
@@ -46,23 +50,36 @@ namespace LoomConfig
                 LoomConfig.Debug($"Changed clap enemy damage to {enemyDamage}", __instance);
             }
             
-            // TODO Movement speed
-            // var speed = LoomConfig.configMovementSpeed.Value;
-            // if (!Mathf.Approximately(speed, 4f))
-            // {
-            //     __instance.enemy.Rigidbody.positionSpeedIdle = speed;
-            //     __instance.enemy.Rigidbody.positionSpeedChase = speed;
-            //     LoomConfig.Debug($"Changed movement speed to {speed}", __instance);
-            // }
+            // TODO Move to coroutine
+            // Movement speed
+            var speed = LoomConfig.configMovementSpeed.Value;
+            if (!Mathf.Approximately(speed, 1.2f))
+            {
+                if (__instance.enemy.NavMeshAgent == null)
+                {
+                    LoomConfig.Error("EnemyNavMeshAgent not found!");
+                    return;
+                }
+                if (__instance.enemy.NavMeshAgent.Agent == null)
+                {
+                    LoomConfig.Error("NavmeshAgent not found!");
+                    return;
+                }
+                
+                __instance.enemy.NavMeshAgent.Agent.speed = speed;
+                LoomConfig.Debug($"Changed movement speed to {speed}", __instance);
+            }
         }
         
         [HarmonyPrefix, HarmonyPatch(nameof(EnemyShadow.UpdatePlayerTarget))]
         public static void UpdatePlayerTargetPrefix([SuppressMessage("ReSharper", "InconsistentNaming")] EnemyShadow __instance)
         {
             if (!SemiFunc.IsMultiplayer()) return;
-            
-            var playerDamage = LoomConfig.configClapPlayerDamage.Value;
-            if (playerDamage == 500) return;
+            if (__instance.hurtColliderScript.playerDamage == 100)
+            {
+                LoomConfig.Debug("Clap player damage is default, no need to sync", __instance);
+                return;
+            }
             
             var synchronizer = __instance.GetComponent<EnemyShadowSynchronizer>();
             if (synchronizer == null)
@@ -76,29 +93,31 @@ namespace LoomConfig
                 return;
             }
             
-            synchronizer.SetPlayerAttackDamage(playerDamage);
+            synchronizer.SetPlayerAttackDamage(__instance.hurtColliderScript.playerDamage);
+        }
+        
+        [HarmonyPostfix, HarmonyPatch(nameof(EnemyShadow.StateLeave))]
+        public static void StateLeavePostfix([SuppressMessage("ReSharper", "InconsistentNaming")] EnemyShadow __instance)
+        {
+            if (__instance.currentState is not EnemyShadow.State.Leave) return;
+            
+            var speed = LoomConfig.configMovementSpeedLeave.Value;
+            if (!Mathf.Approximately(speed, 2.5f))
+            {
+                __instance.enemy.NavMeshAgent.OverrideAgent(speed, 30f, .1f);
+            }
+        }
+        
+        [HarmonyPrefix, HarmonyPatch(nameof(EnemyShadow.BendLogic))]
+        public static void BendLogicPrefix([SuppressMessage("ReSharper", "InconsistentNaming")] EnemyShadow __instance)
+        {
+            var distance = LoomConfig.configPlayerLookDistance.Value;
+            if (!Mathf.Approximately(distance, 7f))
+            {
+                __instance.closeEnoughToLook = __instance.distanceFromPlayer < distance;
+            }
         }
     }
-    
-    // [HarmonyPatch(typeof(EnemyShadow))]
-    // [SuppressMessage("ReSharper", "InconsistentNaming")]
-    // public static class EnemyShadow_Update_Transpiler
-    // {
-    //     
-    //     
-    //     [HarmonyPatch(nameof(EnemyShadow.Update))]
-    //     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions,
-    //         [SuppressMessage("ReSharper", "InconsistentNaming")] EnemyShadow __instance)
-    //     {
-    //         
-    //         
-    //         var codes = new List<CodeInstruction>(instructions);
-    //         
-    //         
-    //         
-    //         return codes.AsEnumerable();
-    //     }
-    // }
     
     public class EnemyShadowSynchronizer : MonoBehaviourPun
     {
@@ -116,8 +135,6 @@ namespace LoomConfig
                 photonView.RPC(nameof(SetPlayerAttackDamageRPC), RpcTarget.Others, damage);
                 LoomConfig.Debug($"Synced clap player damage ({damage}) to clients", enemyShadow);
             }
-            enemyShadow.hurtColliderScript.playerDamage = damage;
-            LoomConfig.Debug($"Changed clap player damage to {damage}", enemyShadow);
             synced = true;
         }
         

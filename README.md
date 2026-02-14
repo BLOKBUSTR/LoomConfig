@@ -1,16 +1,16 @@
 # LoomConfig
 
-This is a simple mod that allows you to configure various parameters of the Loom monster, from mechanics to visuals.
+This is a simple mod that allows you to configure various parameters of the Loom monster, including mechanics, visuals and audio.
 
 Suggestions are welcome! Tell me what's on your mind in the [Discord thread](https://discord.com/channels/1344557689979670578/1344699091959156787).
 
-❗ **This mod must be installed on all clients!** Most options are host-authoritative, except visuals.
+❗ **This mod must be installed on all clients!** Most options are host-authoritative, except visuals and audio.
 
 ## 🔧 Configuration
 
 All default config options match the vanilla settings exactly, so this mod should do nothing out of the box.
 It is up to you to fine-tune this mod to your liking, as much or as little as you want. \
-Configs can be updated in-game with [RepoConfig](https://thunderstore.io/c/repo/p/nickklmao/REPOConfig/), but they will only apply on the next instantiated Loom (typically on level reload).
+Configs can be updated in-game with [RepoConfig](https://thunderstore.io/c/repo/p/nickklmao/REPOConfig/). Some options will only apply on the next instantiated Loom (typically on level reload).
 
 <details>
     <summary>Click to expand config list:</summary>
@@ -40,7 +40,10 @@ Configs can be updated in-game with [RepoConfig](https://thunderstore.io/c/repo/
 
 There are no known incompatibilities yet, but this mod may potentially conflict with others that extensively patch these methods:
 - `EnemyShadow.Awake`
-- `EnemyShadow.Update`
+- `EnemyShadow.UpdatePlayerTarget`
+- `EnemyShadow.StateLeave`
+- `EnemyShadow.BendLogic`
+- `EnemyShadowScreenVeinEffect.Start`
 
 ---
 

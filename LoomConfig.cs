@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
@@ -22,11 +21,17 @@ namespace LoomConfig
         public static ConfigEntry<int> configClapPlayerDamage;
         public static ConfigEntry<int> configClapEnemyDamage;
         public static ConfigEntry<float> configMovementSpeed;
+        public static ConfigEntry<float> configMovementSpeedLeave;
         
         // Visual
         public static ConfigEntry<float> configPlayerLookDistance;
         public static ConfigEntry<bool> configScreenEffectShowHands;
         public static ConfigEntry<bool> configScreenEffectShowVeins;
+        
+        // Audio
+        public static ConfigEntry<float> configIdleLoopVolume;
+        public static ConfigEntry<float> configTargetedSoundVolume;
+        public static ConfigEntry<float> configUntargetedSoundVolume;
         
         // Debug
         private static ConfigEntry<bool> configEnableDebug;
@@ -57,18 +62,32 @@ namespace LoomConfig
             configClapEnemyDamage = Config.Bind("General", "ClapEnemyDamage", 20,
                 new ConfigDescription("The amount of damage dealt to enemies by the clap attack.",
                     new AcceptableValueRange<int>(0, 1000)));
-            configMovementSpeed = Config.Bind("General", "MovementSpeed", 4f,
+            configMovementSpeed = Config.Bind("General", "MovementSpeed", 1.2f,
                 new ConfigDescription("The movement speed of Loom.",
-                    new AcceptableValueRange<float>(1f, 6f)));
+                    new AcceptableValueRange<float>(1f, 4f)));
+            configMovementSpeedLeave = Config.Bind("General", "MovementSpeedLeave", 2.5f,
+                new ConfigDescription("The movement speed of Loom in her Leave state.",
+                    new AcceptableValueRange<float>(1f, 4f)));
             
             // Visual
             configPlayerLookDistance = Config.Bind("Visual", "PlayerLookDistance", 7f,
                 new ConfigDescription("The distance at which Loom considers herself close enough to look at the player.",
-                    new AcceptableValueRange<float>(7f, 15f)));
+                    new AcceptableValueRange<float>(5f, 15f)));
             configScreenEffectShowHands = Config.Bind("Visual", "ScreenEffectShowHands", true,
                 new ConfigDescription("Whether to show the hand layer in the screen effect."));
             configScreenEffectShowVeins = Config.Bind("Visual", "ScreenEffectShowVeins", true,
                 new ConfigDescription("Whether to show the vein layer in the screen effect."));
+            
+            // Audio
+            configIdleLoopVolume = Config.Bind("Audio", "IdleLoopVolume", .1f,
+                new ConfigDescription("The volume of the idle loop sound.",
+                    new AcceptableValueRange<float>(0f, .2f)));
+            configTargetedSoundVolume = Config.Bind("Audio", "TargetedSoundVolume", .5f,
+                new ConfigDescription("The volume of the Targeted sound (when Loom chooses a new player target).",
+                    new AcceptableValueRange<float>(0f, 1f)));
+            configUntargetedSoundVolume = Config.Bind("Audio", "UntargetedSoundVolume", .5f,
+                new ConfigDescription("The volume of the UnTargeted sound (when Loom leaves the current player and/or chooses someone else).",
+                    new AcceptableValueRange<float>(0f, 1f)));
             
             // Debug
             configEnableDebug = Config.Bind("Debug", "EnableDebug", true,
