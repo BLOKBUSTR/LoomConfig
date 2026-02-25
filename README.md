@@ -4,7 +4,7 @@ This is a simple mod that allows you to configure various parameters of the Loom
 
 Suggestions are welcome! Tell me what's on your mind in the [Discord thread](https://discord.com/channels/1344557689979670578/1344699091959156787).
 
-❗ **This mod must be installed on all clients!** Most options are host-authoritative, except visuals and audio.
+❗ **This mod must be installed on all clients!** Some values may be desynced otherwise. Mechanical settings are host-authoritative, while visuals and audio are not.
 
 ## 🔧 Configuration
 
@@ -15,24 +15,26 @@ Configs can be updated in-game with [RepoConfig](https://thunderstore.io/c/repo/
 <details>
     <summary>Click to expand config list:</summary>
 
-| Category    | ConfigEntry           | Default Value | Description                                                                                           |
-|-------------|-----------------------|:-------------:|-------------------------------------------------------------------------------------------------------|
-| **General** |                       |               |                                                                                                       |
-| &#124;      |                       |               |                                                                                                       |
-| &#124;      | MaxHealth             |      500      | The maximum health of Loom.                                                                           |
-| &#124;      | ClapPlayerDamage      |      100      | The amount of damage dealt to players by the clap attack. This setting will be synced to all clients. |
-| &#124;      | ClapEnemyDamage       |      20       | The amount of damage dealt to enemies by the clap attack.                                             |
-| &#124;      | MovementSpeed         |      4f       | The movement speed of Loom.                                                                           |
-| &#124;      |                       |               |                                                                                                       |
-|             |                       |               |                                                                                                       |
-| **Visual**  |                       |               |                                                                                                       |
-| &#124;      | PlayerLookDistance    |      7f       | The distance at which Loom considers herself close enough to look at the player.                      |
-| &#124;      | ScreenEffectShowHands |     true      | Whether to show the hand layer in the screen effect.                                                  |
-| &#124;      | ScreenEffectShowVeins |     true      | Whether to show the vein layer in the screen effect.                                                  |
-|             |                       |               |                                                                                                       |
-| **Debug**   |                       |               |                                                                                                       |
-| &#124;      | EnableDebug           |     false     | Whether to enable debug logging.                                                                      |
-| ↳           |                       |               |                                                                                                       |
+| Category    | ConfigEntry           | Default Value | Description                                                                                                                                                                |
+|-------------|-----------------------|:-------------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **General** |                       |               |                                                                                                                                                                            |
+| &#124;      |                       |               |                                                                                                                                                                            |
+| &#124;      | MaxHealth             |      500      | The maximum health of Loom.                                                                                                                                                |
+| &#124;      | ClapPlayerDamage      |      100      | The amount of damage dealt to players by the clap attack. This setting will be synced to all clients in multiplayer.                                                       |
+| &#124;      | ClapEnemyDamage       |      20       | The amount of damage dealt to enemies by the clap attack.                                                                                                                  |
+| &#124;      | MovementSpeed         |     1.2f      | The base movement speed of Loom.                                                                                                                                           |
+| &#124;      | MovementSpeedLeave    |     2.5f      | The movement speed of Loom in her Leave state                                                                                                                              |
+| &#124;      |                       |               |                                                                                                                                                                            |
+| **Visual**  |                       |               |                                                                                                                                                                            |
+| &#124;      | PlayerLookDistance    |      7f       | The distance at which Loom considers herself close enough to look at the player.                                                                                           |
+| &#124;      | ScreenEffectShowHands |     true      | Whether to show the hand layer in the screen effect.                                                                                                                       |
+| &#124;      | ScreenEffectShowVeins |     true      | Whether to show the vein layer in the screen effect.                                                                                                                       |
+| **Audio**   |                       |               |                                                                                                                                                                            |
+| &#124;      | IdleLoopVolume        |      .1f      | The volume of the idleLoop sound                                                                                                                                           |
+| &#124;      | FixGlobalClapAudio    |     true      | If true, fixes a vanilla bug where the globalClapSound is played at the world origin rather than at Loom's actual location. The local clapSound is unaffected by this bug. |
+| **Debug**   |                       |               |                                                                                                                                                                            |
+| &#124;      | EnableDebug           |     false     | Whether to enable debug logging. Keep this disabled for normal gameplay.                                                                                                   |
+| ↳           |                       |               |                                                                                                                                                                            |
 
 </details>
 
@@ -40,9 +42,10 @@ Configs can be updated in-game with [RepoConfig](https://thunderstore.io/c/repo/
 
 There are no known incompatibilities yet, but this mod may potentially conflict with others that extensively patch these methods:
 - `EnemyShadow.Awake`
-- `EnemyShadow.UpdatePlayerTarget`
 - `EnemyShadow.StateLeave`
 - `EnemyShadow.BendLogic`
+- `EnemyShadowAnim.Update`
+- `EnemyShadowAnim.PlayClapSound` (Prefix skips original method)
 - `EnemyShadowScreenVeinEffect.Start`
 
 ---

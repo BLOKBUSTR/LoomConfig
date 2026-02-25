@@ -9,16 +9,18 @@ using UnityEngine;
 namespace LoomConfig
 {
     [BepInPlugin("BLOKBUSTR.LoomConfig", "LoomConfig", "0.0.1")]
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class LoomConfig : BaseUnityPlugin
     {
         internal static LoomConfig Instance { get; private set; } = null!;
         internal new static ManualLogSource Logger => Instance._logger;
-        [SuppressMessage("ReSharper", "InconsistentNaming")] private ManualLogSource _logger => base.Logger;
+        private ManualLogSource _logger => base.Logger;
         internal Harmony? Harmony { get; set; }
         
-        // General
+        // Mechanical
         public static ConfigEntry<int> configMaxHealth;
         public static ConfigEntry<int> configClapPlayerDamage;
+        public static int syncedClapPlayerDamage;
         public static ConfigEntry<int> configClapEnemyDamage;
         public static ConfigEntry<float> configMovementSpeed;
         public static ConfigEntry<float> configMovementSpeedLeave;
@@ -30,8 +32,7 @@ namespace LoomConfig
         
         // Audio
         public static ConfigEntry<float> configIdleLoopVolume;
-        public static ConfigEntry<float> configTargetedSoundVolume;
-        public static ConfigEntry<float> configUntargetedSoundVolume;
+        public static ConfigEntry<bool> configFixGlobalClapAudio;
         
         // Debug
         private static ConfigEntry<bool> configEnableDebug;
@@ -43,29 +44,30 @@ namespace LoomConfig
             gameObject.transform.parent = null;
             gameObject.hideFlags = HideFlags.HideAndDontSave;
             
-            InitConfig();
+            RegisterConfig();
+            syncedClapPlayerDamage = configClapPlayerDamage.Value;
             Patch();
             
             Logger.LogInfo($"{Info.Metadata.GUID} v{Info.Metadata.Version} has loaded!");
             Debug("Debug logging is enabled.");
         }
         
-        private void InitConfig()
+        private void RegisterConfig()
         {
-            // General
-            configMaxHealth = Config.Bind("General", "MaxHealth", 500,
+            // Mechanical
+            configMaxHealth = Config.Bind("Mechanical", "MaxHealth", 500,
                 new ConfigDescription("The maximum health of Loom.",
                     new AcceptableValueRange<int>(10, 1000)));
-            configClapPlayerDamage = Config.Bind("General", "ClapPlayerDamage", 100,
-                new ConfigDescription("The amount of damage dealt to players by the clap attack. This setting will be synced to all clients.",
+            configClapPlayerDamage = Config.Bind("Mechanical", "ClapPlayerDamage", 100,
+                new ConfigDescription("The amount of damage dealt to players by the clap attack. This setting will be synced to all clients in multiplayer.",
                     new AcceptableValueRange<int>(0, 1000)));
-            configClapEnemyDamage = Config.Bind("General", "ClapEnemyDamage", 20,
+            configClapEnemyDamage = Config.Bind("Mechanical", "ClapEnemyDamage", 20,
                 new ConfigDescription("The amount of damage dealt to enemies by the clap attack.",
                     new AcceptableValueRange<int>(0, 1000)));
-            configMovementSpeed = Config.Bind("General", "MovementSpeed", 1.2f,
-                new ConfigDescription("The movement speed of Loom.",
+            configMovementSpeed = Config.Bind("Mechanical", "MovementSpeed", 1.2f,
+                new ConfigDescription("The base movement speed of Loom.",
                     new AcceptableValueRange<float>(1f, 4f)));
-            configMovementSpeedLeave = Config.Bind("General", "MovementSpeedLeave", 2.5f,
+            configMovementSpeedLeave = Config.Bind("Mechanical", "MovementSpeedLeave", 2.5f,
                 new ConfigDescription("The movement speed of Loom in her Leave state.",
                     new AcceptableValueRange<float>(1f, 4f)));
             
@@ -80,18 +82,14 @@ namespace LoomConfig
             
             // Audio
             configIdleLoopVolume = Config.Bind("Audio", "IdleLoopVolume", .1f,
-                new ConfigDescription("The volume of the idle loop sound.",
+                new ConfigDescription("The volume of the idleLoop sound.",
                     new AcceptableValueRange<float>(0f, .2f)));
-            configTargetedSoundVolume = Config.Bind("Audio", "TargetedSoundVolume", .5f,
-                new ConfigDescription("The volume of the Targeted sound (when Loom chooses a new player target).",
-                    new AcceptableValueRange<float>(0f, 1f)));
-            configUntargetedSoundVolume = Config.Bind("Audio", "UntargetedSoundVolume", .5f,
-                new ConfigDescription("The volume of the UnTargeted sound (when Loom leaves the current player and/or chooses someone else).",
-                    new AcceptableValueRange<float>(0f, 1f)));
+            configFixGlobalClapAudio = Config.Bind("Audio", "FixGlobalClapAudio", true,
+                new ConfigDescription("If true, fixes a vanilla bug where the globalClapSound is played at the world origin rather than at Loom's actual location. The local clapSound is unaffected by this bug."));
             
             // Debug
             configEnableDebug = Config.Bind("Debug", "EnableDebug", true,
-                new ConfigDescription("Whether to enable debug logging."));
+                new ConfigDescription("Whether to enable debug logging. Keep this disabled for normal gameplay."));
         }
         
         internal void Patch()
@@ -108,14 +106,8 @@ namespace LoomConfig
         internal static void Debug(string message, MonoBehaviour? instance = null)
         {
             if (!configEnableDebug.Value) return;
-            var prefix = instance != null ? $"{instance.GetInstanceID()}: " : string.Empty;
+            var prefix = (bool)instance ? $"{instance!.GetInstanceID()}: " : string.Empty;
             Logger.LogDebug(prefix + message);
-        }
-        
-        internal static void Error(string message, MonoBehaviour? instance = null)
-        {
-            var prefix = instance != null ? $"{instance.GetInstanceID()}: " : string.Empty;
-            Logger.LogError(prefix + message);
         }
     }
 }
