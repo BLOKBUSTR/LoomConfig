@@ -8,7 +8,7 @@ using UnityEngine;
 #pragma warning disable CS8618
 namespace LoomConfig
 {
-    [BepInPlugin("BLOKBUSTR.LoomConfig", "LoomConfig", "0.0.1")]
+    [BepInPlugin("BLOKBUSTR.LoomConfig", "LoomConfig", "1.0.0")]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class LoomConfig : BaseUnityPlugin
     {
@@ -85,7 +85,7 @@ namespace LoomConfig
                 new ConfigDescription("The volume of the idleLoop sound.",
                     new AcceptableValueRange<float>(0f, .2f)));
             configFixGlobalClapAudio = Config.Bind("Audio", "FixGlobalClapAudio", true,
-                new ConfigDescription("If true, fixes a vanilla bug where the globalClapSound is played at the world origin rather than at Loom's actual location. The local clapSound is unaffected by this bug."));
+                new ConfigDescription("Patches a vanilla bug where the globalClapSound is played at the world origin rather than at Loom's actual location. The local clapSound is unaffected by this bug."));
             
             // Debug
             configEnableDebug = Config.Bind("Debug", "EnableDebug", true,

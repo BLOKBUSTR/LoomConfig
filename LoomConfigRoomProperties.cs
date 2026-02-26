@@ -8,13 +8,14 @@ namespace LoomConfig
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public static class LoomConfigRoomProperties
     {
-        internal const string LOOM_CLAP_PLAYER_DAMAGE = "LoomPlayerClapDamage";
+        internal const string LOOM_CLAP_PLAYER_DAMAGE = "LoomClapPlayerDamage";
         
         // Method names jokingly suggested by OrigamiCoder lol
         public static void SetLoomProperties()
         {
             if (!PhotonNetwork.IsMasterClient || !PhotonNetwork.InRoom) return;
             
+            LoomConfig.Debug("Setting Custom Room Properties");
             PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
             {
                 { LOOM_CLAP_PLAYER_DAMAGE, LoomConfig.configClapPlayerDamage.Value }
@@ -23,7 +24,9 @@ namespace LoomConfig
         
         public static object? GetLoomProperties(string key)
         {
-            if (!PhotonNetwork.InRoom || !PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(key)) return null;
+            if (SemiFunc.IsMasterClientOrSingleplayer() || !PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(key)) return null;
+            
+            LoomConfig.Debug("Getting Custom Room Properties | key: " + key);
             return PhotonNetwork.CurrentRoom.CustomProperties[key];
         }
         
