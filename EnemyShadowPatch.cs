@@ -14,6 +14,8 @@ namespace LoomConfig
         [SuppressMessage("ReSharper", "InvertIf")]
         public static void AwakePostfix(EnemyShadow __instance)
         {
+            LoomConfig.Debug("Applying custom settings to new Loom", __instance);
+            
             var util = __instance.AddComponent<EnemyShadowUtil>();
             util.enemyShadow = __instance;
             
@@ -29,6 +31,10 @@ namespace LoomConfig
                     enemyHealth.health = health;
                     enemyHealth.healthCurrent = health;
                     LoomConfig.Debug($"Changed health to {health}", __instance);
+                }
+                else
+                {
+                    LoomConfig.Error("EnemyHealth component not found!", __instance);
                 }
             }
             

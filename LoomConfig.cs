@@ -109,5 +109,11 @@ namespace LoomConfig
             var prefix = (bool)instance ? $"{instance!.GetInstanceID()}: " : string.Empty;
             Logger.LogDebug(prefix + message);
         }
+        
+        internal static void Error(string message, MonoBehaviour? instance = null)
+        {
+            var prefix = (bool)instance ? $"{instance!.GetInstanceID()}: " : string.Empty;
+            Logger.LogDebug(prefix + message);
+        }
     }
 }
