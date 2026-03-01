@@ -14,7 +14,7 @@ namespace LoomConfig
         [SuppressMessage("ReSharper", "InvertIf")]
         public static void AwakePostfix(EnemyShadow __instance)
         {
-            LoomConfig.Debug("Applying custom properties to new Loom", __instance);
+            LoomConfig.Debug("Applying custom properties to new Loom, if any", __instance);
             
             var util = __instance.AddComponent<EnemyShadowUtil>();
             util.enemyShadow = __instance;
@@ -22,7 +22,7 @@ namespace LoomConfig
             // Delayed Properties
             util.StartCoroutine(util.SetDelayedProperties());
             
-            if (!SemiFunc.IsMasterClientOrSingleplayer()) return;
+            if (SemiFunc.IsNotMasterClient()) return;
             
             // Health
             var health = LoomConfig.configMaxHealth.Value;

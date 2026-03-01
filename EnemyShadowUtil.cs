@@ -31,7 +31,7 @@ namespace LoomConfig
                 LoomConfig.Debug($"Changed clap player damage to {playerDamage}", enemyShadow);
             }
             
-            if (SemiFunc.IsMasterClientOrSingleplayer()) yield break;
+            if (SemiFunc.IsNotMasterClient()) yield break;
             
             var speed = LoomConfig.configMovementSpeed.Value;
             if (!Mathf.Approximately(speed, 1.2f))
