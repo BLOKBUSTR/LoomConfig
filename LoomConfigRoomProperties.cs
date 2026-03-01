@@ -13,21 +13,28 @@ namespace LoomConfig
         // Method names jokingly suggested by OrigamiCoder lol
         public static void SetLoomProperties()
         {
-            if (!PhotonNetwork.IsMasterClient || !PhotonNetwork.InRoom) return;
+            if (SemiFunc.IsNotMasterClient() || !SemiFunc.IsMultiplayer()) return;
             
-            LoomConfig.Debug("Setting Custom Room Properties");
+            var playerDamage = LoomConfig.configClapPlayerDamage.Value;
+            if (playerDamage == GetClapPlayerDamage())
+            {
+                LoomConfig.Debug("playerDamage is the same, no need to sync");
+                return;
+            }
+            LoomConfig.Debug($"Setting Custom Room (Loom) Properties | playerDamage: {playerDamage}");
             PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
             {
-                { LOOM_CLAP_PLAYER_DAMAGE, LoomConfig.configClapPlayerDamage.Value }
+                { LOOM_CLAP_PLAYER_DAMAGE, playerDamage }
             });
         }
         
         public static object? GetLoomProperties(string key)
         {
-            if (SemiFunc.IsMasterClientOrSingleplayer() || !PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(key)) return null;
+            if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(key)) return null;
             
-            LoomConfig.Debug("Getting Custom Room Properties | key: " + key);
-            return PhotonNetwork.CurrentRoom.CustomProperties[key];
+            var damage = PhotonNetwork.CurrentRoom.CustomProperties[key];
+            LoomConfig.Debug($"Getting Custom Room (Loom) Properties | key: {key} | damage: {damage}");
+            return damage;
         }
         
         public static int GetClapPlayerDamage()

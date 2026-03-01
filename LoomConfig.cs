@@ -20,7 +20,6 @@ namespace LoomConfig
         // Mechanical
         public static ConfigEntry<int> configMaxHealth;
         public static ConfigEntry<int> configClapPlayerDamage;
-        public static int syncedClapPlayerDamage;
         public static ConfigEntry<int> configClapEnemyDamage;
         public static ConfigEntry<float> configMovementSpeed;
         public static ConfigEntry<float> configMovementSpeedLeave;
@@ -45,7 +44,6 @@ namespace LoomConfig
             gameObject.hideFlags = HideFlags.HideAndDontSave;
             
             RegisterConfig();
-            syncedClapPlayerDamage = configClapPlayerDamage.Value;
             Patch();
             
             Logger.LogInfo($"{Info.Metadata.GUID} v{Info.Metadata.Version} has loaded!");
@@ -76,16 +74,16 @@ namespace LoomConfig
                 new ConfigDescription("The distance at which Loom considers herself close enough to look at the player.",
                     new AcceptableValueRange<float>(5f, 15f)));
             configScreenEffectShowHands = Config.Bind("Visual", "ScreenEffectShowHands", true,
-                new ConfigDescription("Whether to show the hand layer in the screen effect."));
+                new ConfigDescription("Whether to show the hand layer in the \"targeted\" screen effect."));
             configScreenEffectShowVeins = Config.Bind("Visual", "ScreenEffectShowVeins", true,
-                new ConfigDescription("Whether to show the vein layer in the screen effect."));
+                new ConfigDescription("Whether to show the vein layer in the \"targeted\" screen effect."));
             
             // Audio
             configIdleLoopVolume = Config.Bind("Audio", "IdleLoopVolume", .1f,
                 new ConfigDescription("The volume of the idleLoop sound.",
                     new AcceptableValueRange<float>(0f, .2f)));
             configFixGlobalClapAudio = Config.Bind("Audio", "FixGlobalClapAudio", true,
-                new ConfigDescription("Patches a vanilla bug where the globalClapSound is played at the world origin rather than at Loom's actual location. The local clapSound is unaffected by this bug."));
+                new ConfigDescription("Patches a vanilla oversight where the globalClapSound is played at the world origin rather than at Loom's actual location. The local clapSound is unaffected by this bug."));
             
             // Debug
             configEnableDebug = Config.Bind("Debug", "EnableDebug", true,

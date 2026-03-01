@@ -14,10 +14,13 @@ namespace LoomConfig
         [SuppressMessage("ReSharper", "InvertIf")]
         public static void AwakePostfix(EnemyShadow __instance)
         {
-            LoomConfig.Debug("Applying custom settings to new Loom", __instance);
+            LoomConfig.Debug("Applying custom properties to new Loom", __instance);
             
             var util = __instance.AddComponent<EnemyShadowUtil>();
             util.enemyShadow = __instance;
+            
+            // Delayed Properties
+            util.StartCoroutine(util.SetDelayedProperties());
             
             if (!SemiFunc.IsMasterClientOrSingleplayer()) return;
             
@@ -38,25 +41,11 @@ namespace LoomConfig
                 }
             }
             
-            // Damage
-            var playerDamage = LoomConfig.syncedClapPlayerDamage;
-            if (playerDamage != 100)
-            {
-                __instance.hurtColliderScript.playerDamage = playerDamage;
-                LoomConfig.Debug($"Changed clap player damage to {playerDamage}", __instance);
-            }
             var enemyDamage = LoomConfig.configClapEnemyDamage.Value;
             if (enemyDamage != 20)
             {
                 __instance.hurtColliderScript.enemyDamage = enemyDamage;
                 LoomConfig.Debug($"Changed clap enemy damage to {enemyDamage}", __instance);
-            }
-            
-            // Movement speed
-            var speed = LoomConfig.configMovementSpeed.Value;
-            if (!Mathf.Approximately(speed, 1.2f))
-            {
-                util.StartCoroutine(util.SetMovementSpeedCoroutine(speed));
             }
         }
         
