@@ -86,7 +86,7 @@ namespace LoomConfig
                 new ConfigDescription("Patches a vanilla oversight where the globalClapSound is played at the world origin rather than at Loom's actual location. The local clapSound is unaffected by this bug."));
             
             // Debug
-            configEnableDebug = Config.Bind("Debug", "EnableDebug", true,
+            configEnableDebug = Config.Bind("Debug", "EnableDebug", false,
                 new ConfigDescription("Whether to enable debug logging. Keep this disabled for normal gameplay."));
         }
         
