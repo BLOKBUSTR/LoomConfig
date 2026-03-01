@@ -51,7 +51,7 @@ There are no known incompatibilities yet, but this mod may potentially conflict 
 ## ❤️ Acknowledgements
 
 - [OrigamiCoder](https://thunderstore.io/c/repo/p/OrigamiCoder/) for code guidance, extensive playtesting, and a little joke for one of the method names ;)
-- [EvryFlare](https://linktr.ee/evryflare) for additional playtesting
+- My friends [EvryFlare](https://linktr.ee/evryflare) and Erysis for additional playtesting
 
 Thank you for using this mod! \
 Please report any issues on [GitHub](https://github.com/BLOKBUSTR/LoomConfig) or the [Discord thread](https://discord.com/channels/1344557689979670578/1344699091959156787).
