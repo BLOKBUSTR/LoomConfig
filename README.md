@@ -4,7 +4,7 @@ This mod allows you to configure various parameters of the Loom monster, includi
 
 ❗ **This mod must be installed on all clients!** Some values will be desynced otherwise. Mechanical settings are host-authoritative, while visuals and audio are not.
 
-Suggestions are welcome! Tell me what's on your mind in the [Discord thread](https://discord.com/channels/1344557689979670578/1344699091959156787).
+Suggestions are welcome! Tell me what's on your mind in the [Discord thread](https://discord.com/channels/1344557689979670578/1477562871473766572).
 
 ## 🔧 Configuration
 
@@ -54,4 +54,4 @@ There are no known incompatibilities yet, but this mod may potentially conflict 
 - My friends [EvryFlare](https://linktr.ee/evryflare) and Erysis for additional playtesting
 
 Thank you for using this mod! \
-Please report any issues on [GitHub](https://github.com/BLOKBUSTR/LoomConfig) or the [Discord thread](https://discord.com/channels/1344557689979670578/1344699091959156787).
+Please report any issues on [GitHub](https://github.com/BLOKBUSTR/LoomConfig) or the [Discord thread](https://discord.com/channels/1344557689979670578/1477562871473766572).
