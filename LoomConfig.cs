@@ -8,7 +8,7 @@ using UnityEngine;
 #pragma warning disable CS8618
 namespace LoomConfig
 {
-    [BepInPlugin("BLOKBUSTR.LoomConfig", "LoomConfig", "1.0.0")]
+    [BepInPlugin("BLOKBUSTR.LoomConfig", "LoomConfig", "1.0.1")]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class LoomConfig : BaseUnityPlugin
     {
