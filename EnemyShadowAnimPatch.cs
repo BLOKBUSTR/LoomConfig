@@ -7,32 +7,52 @@ namespace LoomConfig
 {
     [HarmonyPatch(typeof(EnemyShadowAnim))]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class EnemyShadowAnimPatch
+    internal class EnemyShadowAnimPatch
     {
+        // TODO see if Sound.StoreDefault() is actually used in R.E.P.O., if not then call here manually
+        
         [HarmonyPrefix, HarmonyPatch(nameof(EnemyShadowAnim.Update))]
-        public static void UpdatePrefix(EnemyShadowAnim __instance)
+        internal static void UpdatePrefix(EnemyShadowAnim __instance)
         {
             var idleLoopVolume = LoomConfig.configIdleLoopVolume.Value;
-            if (Mathf.Approximately(idleLoopVolume, .1f) || Mathf.Approximately(idleLoopVolume, __instance.idleLoop.Volume)) return;
+            if (Mathf.Approximately(idleLoopVolume, .1f) &&
+                Mathf.Approximately(idleLoopVolume, __instance.idleLoop.Volume)) return;
             
             __instance.idleLoop.Volume = idleLoopVolume;
         }
         
-        // Fix for Loom's global clap audio playing at world origin
-        [HarmonyPrefix, HarmonyPatch(nameof(EnemyShadowAnim.PlayClapSound))]
-        public static bool PlayClapSoundPrefix(EnemyShadowAnim __instance)
+        [HarmonyPrefix, HarmonyPatch(nameof(EnemyShadowAnim.playTargetedSound))]
+        internal static bool PlayTargetedSoundPrefix(EnemyShadowAnim __instance)
         {
-            if (!LoomConfig.configFixGlobalClapAudio.Value)
+            var targetedVolume = LoomConfig.configTargetedVolume.Value;
+            if (targetedVolume <= 0f) return false;
+            if (!Mathf.Approximately(targetedVolume, .5f) ||
+                !Mathf.Approximately(targetedVolume, __instance.targeted.Volume))
             {
-                LoomConfig.Debug("Played globalClapSound at vanilla position (Vector3.zero)", __instance);
-                return true;
+                __instance.targeted.Volume = targetedVolume;
+                if (targetedVolume < .2f)
+                {
+                    __instance.targeted.VolumeRandom = targetedVolume * .5f;
+                }
             }
-            
-            __instance.clapSound.Play(__instance.transform.position);
-            __instance.globalClapSound.Play(__instance.transform.position);
-            LoomConfig.Debug($"Played globalClapSound at fixed position (transform.position: {__instance.transform.position})", __instance);
-            
-            return false;
+            return true;
+        }
+        
+        [HarmonyPrefix, HarmonyPatch(nameof(EnemyShadowAnim.PlayUntargetedSound))]
+        internal static bool PlayUntargetedSoundPrefix(EnemyShadowAnim __instance)
+        {
+            var notTargetedVolume = LoomConfig.configNotTargetedVolume.Value;
+            if (notTargetedVolume <= 0f) return false;
+            if (!Mathf.Approximately(notTargetedVolume, .5f) ||
+                !Mathf.Approximately(notTargetedVolume, __instance.notTargeted.Volume))
+            {
+                __instance.notTargeted.Volume = notTargetedVolume;
+                if (notTargetedVolume < .2f)
+                {
+                    __instance.notTargeted.VolumeRandom = notTargetedVolume * .5f;
+                }
+            }
+            return true;
         }
     }
 }

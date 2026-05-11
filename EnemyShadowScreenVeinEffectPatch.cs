@@ -6,10 +6,10 @@ namespace LoomConfig
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     [HarmonyPatch(typeof(EnemyShadowScreenVeinEffect))]
-    public class EnemyShadowScreenVeinEffectPatch
+    internal class EnemyShadowScreenVeinEffectPatch
     {
         [HarmonyPrefix, HarmonyPatch(nameof(EnemyShadowScreenVeinEffect.Start))]
-        public static void StartPrefix(EnemyShadowScreenVeinEffect __instance)
+        internal static void StartPrefix(EnemyShadowScreenVeinEffect __instance)
         {
             if (!LoomConfig.configScreenEffectShowHands.Value)
             {

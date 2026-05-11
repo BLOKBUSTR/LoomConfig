@@ -8,7 +8,7 @@ using UnityEngine;
 #pragma warning disable CS8618
 namespace LoomConfig
 {
-    [BepInPlugin("BLOKBUSTR.LoomConfig", "LoomConfig", "1.0.1")]
+    [BepInPlugin("BLOKBUSTR.LoomConfig", "LoomConfig", "1.1.0")]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class LoomConfig : BaseUnityPlugin
     {
@@ -17,24 +17,29 @@ namespace LoomConfig
         private ManualLogSource _logger => base.Logger;
         internal Harmony? Harmony { get; set; }
         
-        // Mechanical
+        #region ConfigEntries
+        
+        // Logic
         public static ConfigEntry<int> configMaxHealth;
         public static ConfigEntry<int> configClapPlayerDamage;
         public static ConfigEntry<int> configClapEnemyDamage;
         public static ConfigEntry<float> configMovementSpeed;
         public static ConfigEntry<float> configMovementSpeedLeave;
         
-        // Visual
+        // Visuals
         public static ConfigEntry<float> configPlayerLookDistance;
         public static ConfigEntry<bool> configScreenEffectShowHands;
         public static ConfigEntry<bool> configScreenEffectShowVeins;
         
         // Audio
         public static ConfigEntry<float> configIdleLoopVolume;
-        public static ConfigEntry<bool> configFixGlobalClapAudio;
+        public static ConfigEntry<float> configTargetedVolume;
+        public static ConfigEntry<float> configNotTargetedVolume;
         
         // Debug
         private static ConfigEntry<bool> configEnableDebug;
+        
+        #endregion
         
         private void Awake()
         {
@@ -52,42 +57,46 @@ namespace LoomConfig
         
         private void RegisterConfig()
         {
-            // Mechanical
-            configMaxHealth = Config.Bind("Mechanical", "MaxHealth", 500,
+            // Logic
+            configMaxHealth = Config.Bind("Logic", "MaxHealth", 500,
                 new ConfigDescription("The maximum health of Loom.",
                     new AcceptableValueRange<int>(10, 1000)));
-            configClapPlayerDamage = Config.Bind("Mechanical", "ClapPlayerDamage", 100,
+            configClapPlayerDamage = Config.Bind("Logic", "ClapPlayerDamage", 100,
                 new ConfigDescription("The amount of damage dealt to players by the clap attack. This setting will be synced to all clients in multiplayer.",
                     new AcceptableValueRange<int>(0, 1000)));
-            configClapEnemyDamage = Config.Bind("Mechanical", "ClapEnemyDamage", 20,
+            configClapEnemyDamage = Config.Bind("Logic", "ClapEnemyDamage", 20,
                 new ConfigDescription("The amount of damage dealt to enemies by the clap attack.",
                     new AcceptableValueRange<int>(0, 1000)));
-            configMovementSpeed = Config.Bind("Mechanical", "MovementSpeed", 1.2f,
+            configMovementSpeed = Config.Bind("Logic", "MovementSpeed", 1.2f,
                 new ConfigDescription("The base movement speed of Loom.",
                     new AcceptableValueRange<float>(1f, 4f)));
-            configMovementSpeedLeave = Config.Bind("Mechanical", "MovementSpeedLeave", 2.5f,
+            configMovementSpeedLeave = Config.Bind("Logic", "MovementSpeedLeave", 2.5f,
                 new ConfigDescription("The movement speed of Loom in her Leave state.",
                     new AcceptableValueRange<float>(1f, 4f)));
             
-            // Visual
-            configPlayerLookDistance = Config.Bind("Visual", "PlayerLookDistance", 7f,
+            // Visuals
+            configPlayerLookDistance = Config.Bind("Visuals", "PlayerLookDistance", 7f,
                 new ConfigDescription("The distance at which Loom considers herself close enough to look at the player.",
                     new AcceptableValueRange<float>(5f, 15f)));
-            configScreenEffectShowHands = Config.Bind("Visual", "ScreenEffectShowHands", true,
-                new ConfigDescription("Whether to show the hand layer in the \"targeted\" screen effect."));
-            configScreenEffectShowVeins = Config.Bind("Visual", "ScreenEffectShowVeins", true,
-                new ConfigDescription("Whether to show the vein layer in the \"targeted\" screen effect."));
+            configScreenEffectShowHands = Config.Bind("Visuals", "ScreenEffectShowHands", true,
+                "Whether to show the hand layer in the \"targeted\" screen effect.");
+            configScreenEffectShowVeins = Config.Bind("Visuals", "ScreenEffectShowVeins", true,
+                "Whether to show the vein layer in the \"targeted\" screen effect.");
             
             // Audio
             configIdleLoopVolume = Config.Bind("Audio", "IdleLoopVolume", .1f,
-                new ConfigDescription("The volume of the idleLoop sound.",
+                new ConfigDescription("The volume of the \"idleLoop\" sound.",
                     new AcceptableValueRange<float>(0f, .2f)));
-            configFixGlobalClapAudio = Config.Bind("Audio", "FixGlobalClapAudio", true,
-                new ConfigDescription("Patches a vanilla oversight where the globalClapSound is played at the world origin rather than at Loom's actual location. The local clapSound is unaffected by this bug."));
+            configTargetedVolume = Config.Bind("Audio", "TargetedVolume", .5f,
+                new ConfigDescription("The volume of the \"targeted\" sound, played when Loom begins to target you.",
+                    new AcceptableValueRange<float>(0f, 1f)));
+            configNotTargetedVolume = Config.Bind("Audio", "NotTargetedVolume", .5f,
+                new ConfigDescription("The volume of the \"notTargeted\" sound, played when Loom loses interest in you.",
+                    new AcceptableValueRange<float>(0f, 1f)));
             
             // Debug
             configEnableDebug = Config.Bind("Debug", "EnableDebug", false,
-                new ConfigDescription("Whether to enable debug logging. Keep this disabled for normal gameplay."));
+                "Whether to enable debug logging. Keep this disabled for normal gameplay.");
         }
         
         internal void Patch()
@@ -96,22 +105,14 @@ namespace LoomConfig
             Harmony.PatchAll();
         }
         
-        internal void Unpatch()
-        {
-            Harmony?.UnpatchSelf();
-        }
-        
         internal static void Debug(string message, MonoBehaviour? instance = null)
         {
-            if (!configEnableDebug.Value) return;
-            var prefix = (bool)instance ? $"{instance!.GetInstanceID()}: " : string.Empty;
-            Logger.LogDebug(prefix + message);
+            if (configEnableDebug.Value) Logger.LogDebug((bool)instance ? instance + ": " + message : message);
         }
         
         internal static void Error(string message, MonoBehaviour? instance = null)
         {
-            var prefix = (bool)instance ? $"{instance!.GetInstanceID()}: " : string.Empty;
-            Logger.LogDebug(prefix + message);
+            Logger.LogDebug((bool)instance ? instance + ": " + message : message);
         }
     }
 }

@@ -8,11 +8,11 @@ namespace LoomConfig
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     [HarmonyPatch(typeof(EnemyShadow))]
-    public static class EnemyShadowPatch
+    internal static class EnemyShadowPatch
     {
         [HarmonyPostfix, HarmonyPatch(nameof(EnemyShadow.Awake))]
         [SuppressMessage("ReSharper", "InvertIf")]
-        public static void AwakePostfix(EnemyShadow __instance)
+        internal static void AwakePostfix(EnemyShadow __instance)
         {
             LoomConfig.Debug("Applying custom properties to new Loom, if any", __instance);
             
@@ -50,7 +50,7 @@ namespace LoomConfig
         }
         
         [HarmonyPostfix, HarmonyPatch(nameof(EnemyShadow.StateLeave))]
-        public static void StateLeavePostfix(EnemyShadow __instance)
+        internal static void StateLeavePostfix(EnemyShadow __instance)
         {
             if (__instance.currentState is not EnemyShadow.State.Leave) return;
             
@@ -62,7 +62,7 @@ namespace LoomConfig
         }
         
         [HarmonyPrefix, HarmonyPatch(nameof(EnemyShadow.BendLogic))]
-        public static void BendLogicPrefix(EnemyShadow __instance)
+        internal static void BendLogicPrefix(EnemyShadow __instance)
         {
             var distance = LoomConfig.configPlayerLookDistance.Value;
             if (!Mathf.Approximately(distance, 7f) && !Mathf.Approximately(distance, __instance.distanceFromPlayer))

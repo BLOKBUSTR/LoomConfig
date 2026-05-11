@@ -12,7 +12,9 @@ namespace LoomConfig
         [SuppressMessage("ReSharper", "InvertIf")]
         public IEnumerator SetDelayedProperties()
         {
-            yield return null; // Skip for one update tick
+            // Skip for one update tick
+            yield return null;
+            
             // Delay further in case the NavMeshAgent still isn't set up for some reason
             while (!enemyShadow.enemy.NavMeshAgent?.Agent)
             {

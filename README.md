@@ -1,8 +1,8 @@
 # LoomConfig
 
-This mod allows you to configure various parameters of the Loom monster, including mechanics, visuals and audio.
+This mod allows you to configure various parameters of the Loom monster, including logic, visuals and audio.
 
-❗ **This mod must be installed on all clients!** Some values will be desynced otherwise. Mechanical settings are host-authoritative, while visuals and audio are not.
+❗ **This mod must be installed on all clients!** Some values will be desynced otherwise. Logic settings are host-authoritative, while visuals and audio are client-side.
 
 Suggestions are welcome! Tell me what's on your mind in the [Discord thread](https://discord.com/channels/1344557689979670578/1477562871473766572).
 
@@ -15,37 +15,40 @@ Configs can be updated in-game with [RepoConfig](https://thunderstore.io/c/repo/
 <details>
     <summary>Click to expand config list:</summary>
 
-| Category    | ConfigEntry           | Default Value | Description                                                                                                                                                               |
-|-------------|-----------------------|:-------------:|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **General** |                       |               |                                                                                                                                                                           |
-| &#124;      | MaxHealth             |      500      | The maximum health of Loom.                                                                                                                                               |
-| &#124;      | ClapPlayerDamage      |      100      | The amount of damage dealt to players by the clap attack. This setting will be synced to all clients in multiplayer.                                                      |
-| &#124;      | ClapEnemyDamage       |      20       | The amount of damage dealt to enemies by the clap attack.                                                                                                                 |
-| &#124;      | MovementSpeed         |     1.2f      | The base movement speed of Loom.                                                                                                                                          |
-| ↳           | MovementSpeedLeave    |     2.5f      | The movement speed of Loom in her Leave state                                                                                                                             |
-| **Visual**  |                       |
-| &#124;      | PlayerLookDistance    |      7f       | The distance at which Loom considers herself close enough to look at the player.                                                                                          |
-| &#124;      | ScreenEffectShowHands |     true      | Whether to show the hand layer in the "targeted" screen effect.                                                                                                           |
-| ↳           | ScreenEffectShowVeins |     true      | Whether to show the vein layer in the "targeted" screen effect.                                                                                                           |
+| Category    | ConfigEntry           | Default Value | Description                                                                                                          |
+|-------------|-----------------------|:-------------:|----------------------------------------------------------------------------------------------------------------------|
+| **Logic**   |                       |               |                                                                                                                      |
+| &#124;      | MaxHealth             |      500      | The maximum health of Loom.                                                                                          |
+| &#124;      | ClapPlayerDamage      |      100      | The amount of damage dealt to players by the clap attack. This setting will be synced to all clients in multiplayer. |
+| &#124;      | ClapEnemyDamage       |      20       | The amount of damage dealt to enemies by the clap attack.                                                            |
+| &#124;      | MovementSpeed         |     1.2f      | The base movement speed of Loom.                                                                                     |
+| ↳           | MovementSpeedLeave    |     2.5f      | The movement speed of Loom in her Leave state                                                                        |
+| **Visuals** |                       |
+| &#124;      | PlayerLookDistance    |      7f       | The distance at which Loom considers herself close enough to look at the player.                                     |
+| &#124;      | ScreenEffectShowHands |     true      | Whether to show the hand layer in the "targeted" screen effect.                                                      |
+| ↳           | ScreenEffectShowVeins |     true      | Whether to show the vein layer in the "targeted" screen effect.                                                      |
 | **Audio**   |                       |
-| &#124;      | IdleLoopVolume        |      .1f      | The volume of the idleLoop sound                                                                                                                                          |
-| ↳           | FixGlobalClapAudio    |     true      | Patches a vanilla oversight where the globalClapSound is played at the world origin rather than at Loom's actual location. The local clapSound is unaffected by this bug. |
+| &#124;      | IdleLoopVolume        |      .1f      | The volume of the "idleLoop" sound.                                                                                  |
+| &#124;      | TargetedVolume        |      .5f      | The volume of the "targeted" sound, played when Loom begins to target you                                            |
+| ↳           | NotTargetedVolume     |      .5f      | The volume of the "notTargeted" sound, played when Loom loses interest in you.                                       |
 | **Debug**   |                       |
-| ↳           | EnableDebug           |     false     | Whether to enable debug logging. Keep this disabled for normal gameplay.                                                                                                  |
+| ↳           | EnableDebug           |     false     | Whether to enable debug logging. Keep this disabled for normal gameplay.                                             |
 
 </details>
 
-## ⚠️ Compatibility
+## ⚠️ Known Issues
 
-**Known Issues:**
 - Player damage is quite inconsistent/unreliable on multiplayer clients, however I think this is more of a vanilla quirk than anything else... I plan to investigate this further.
+
+## ⚠️ Compatibility
 
 There are no known incompatibilities yet, but this mod may potentially conflict with others that skip or extensively patch these methods:
 - `EnemyShadow.Awake`
 - `EnemyShadow.StateLeave`
 - `EnemyShadow.BendLogic`
 - `EnemyShadowAnim.Update`
-- `EnemyShadowAnim.PlayClapSound` (Prefix skips original method)
+- `EnemyShadowAnim.playTargetedSound` (Prefix skips original method if volume is disabled)
+- `EnemyShadowAnim.PlayUntargetedSound` (Prefix skips original method if volume is disabled)
 - `EnemyShadowScreenVeinEffect.Start`
 
 ## ❤️ Acknowledgements
