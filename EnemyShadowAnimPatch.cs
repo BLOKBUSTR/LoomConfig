@@ -9,8 +9,6 @@ namespace LoomConfig
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     internal class EnemyShadowAnimPatch
     {
-        // TODO see if Sound.StoreDefault() is actually used in R.E.P.O., if not then call here manually
-        
         [HarmonyPrefix, HarmonyPatch(nameof(EnemyShadowAnim.Update))]
         internal static void UpdatePrefix(EnemyShadowAnim __instance)
         {
