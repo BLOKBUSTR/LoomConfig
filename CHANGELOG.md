@@ -4,7 +4,8 @@
 
 - Updated for R.E.P.O. 0.4, the "Cosmetics Update".
 - Added new Audio config options `TargetedVolume` and `NotTargetedVolume`, which are played when Loom begins to target a player or loses interest in them, respectively.
-- Removed `FixGlobalClapAudio` config and patch, since the bug is now fixed in vanilla.
+- Added an experimental `FixNeckClipping` config setting, to fix Loom's neck mesh clipping through her mouth in certain scenarios. It may not be a perfect solution, but it should make the issue less obvious.
+- Removed `FixGlobalClapAudio` config and patch, since that bug is now fixed in vanilla.
 - Various code and config tweaks.
 - Upgraded BepInEx dependency.
 

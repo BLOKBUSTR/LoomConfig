@@ -25,7 +25,7 @@ namespace LoomConfig
             var playerDamage = LoomConfig.configClapPlayerDamage.Value;
             if (SemiFunc.IsNotMasterClient())
             {
-                playerDamage = LoomConfigRoomProperties.GetClapPlayerDamage();
+                playerDamage = LoomProperties.GetClapPlayerDamage();
             }
             if (playerDamage != 100)
             {

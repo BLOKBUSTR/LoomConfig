@@ -6,7 +6,7 @@ using Photon.Pun;
 namespace LoomConfig
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public static class LoomConfigRoomProperties
+    public static class LoomProperties
     {
         internal const string LOOM_CLAP_PLAYER_DAMAGE = "LoomClapPlayerDamage";
         

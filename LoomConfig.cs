@@ -36,6 +36,9 @@ namespace LoomConfig
         public static ConfigEntry<float> configTargetedVolume;
         public static ConfigEntry<float> configNotTargetedVolume;
         
+        // Fixes
+        public static ConfigEntry<bool> configFixNeckClipping;
+        
         // Debug
         private static ConfigEntry<bool> configEnableDebug;
         
@@ -76,7 +79,7 @@ namespace LoomConfig
             
             // Visuals
             configPlayerLookDistance = Config.Bind("Visuals", "PlayerLookDistance", 7f,
-                new ConfigDescription("The distance at which Loom considers herself close enough to look at the player.",
+                new ConfigDescription("The maximum distance at which Loom will look at the player.",
                     new AcceptableValueRange<float>(5f, 15f)));
             configScreenEffectShowHands = Config.Bind("Visuals", "ScreenEffectShowHands", true,
                 "Whether to show the hand layer in the \"targeted\" screen effect.");
@@ -93,6 +96,10 @@ namespace LoomConfig
             configNotTargetedVolume = Config.Bind("Audio", "NotTargetedVolume", .5f,
                 new ConfigDescription("The volume of the \"notTargeted\" sound, played when Loom loses interest in you.",
                     new AcceptableValueRange<float>(0f, 1f)));
+            
+            // Fixes
+            configFixNeckClipping = Config.Bind("Fixes", "FixNeckClipping", true,
+                "An experimental fix for Loom's neck mesh clipping through her mouth in her various bend positions.");
             
             // Debug
             configEnableDebug = Config.Bind("Debug", "EnableDebug", false,

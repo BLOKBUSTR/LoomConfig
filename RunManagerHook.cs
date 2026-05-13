@@ -1,20 +1,24 @@
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
+using UnityEngine;
 
 #pragma warning disable CS8618
 namespace LoomConfig
 {
     [HarmonyPatch(typeof(RunManager))]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class RunManagerHook
+    internal static class RunManagerHook
     {
         [HarmonyPostfix, HarmonyPatch(nameof(RunManager.ChangeLevel))]
-        public static void ChangeLevelPostfix(bool _levelFailed)
+        public static void ChangeLevelPostfix(RunManager __instance, bool _levelFailed)
         {
             // To avoid getting spammed by the Arena, or by Imperium if "Disable Game Over" is enabled
-            if (_levelFailed) return;
+            if (_levelFailed || SemiFunc.IsLevelArena(RunManager.instance.levelCurrent)) return;
             
-            LoomConfigRoomProperties.SetLoomProperties();
+            EnemyShadowAnimPatch.inLevel = false;
+            EnemyShadowAnimPatch.neckRefs.Clear();
+            LoomProperties.SetLoomProperties();
         }
     }
 }

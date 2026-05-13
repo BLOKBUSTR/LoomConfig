@@ -6,7 +6,7 @@ namespace LoomConfig
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     [HarmonyPatch(typeof(EnemyShadowScreenVeinEffect))]
-    internal class EnemyShadowScreenVeinEffectPatch
+    internal static class EnemyShadowScreenVeinEffectPatch
     {
         [HarmonyPrefix, HarmonyPatch(nameof(EnemyShadowScreenVeinEffect.Start))]
         internal static void StartPrefix(EnemyShadowScreenVeinEffect __instance)
