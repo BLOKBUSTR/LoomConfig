@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
-using UnityEngine;
 
 #pragma warning disable CS8618
 namespace LoomConfig
